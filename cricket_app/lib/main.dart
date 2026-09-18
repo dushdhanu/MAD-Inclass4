@@ -84,8 +84,7 @@ class _CricketGameState extends State<CricketGame> {
                       width: 100,
                       height: 100,
                       color: Colors.white,
-                      // NOTE: Replace this Icon with your actual image: Image.asset('assets/bat.png')
-                      child: const Icon(Icons.sports_cricket, size: 80, color: Colors.brown), 
+                      child: Image.asset('asset/bat.png'), 
                     ),
                     const SizedBox(height: 10),
                     // Text Box (T1)
@@ -103,8 +102,7 @@ class _CricketGameState extends State<CricketGame> {
                       width: 100,
                       height: 100,
                       color: Colors.white,
-                      // NOTE: Replace this Icon with your actual image: Image.asset('assets/ball.png')
-                      child: const Icon(Icons.sports_baseball, size: 80, color: Colors.red), 
+                      child: Image.asset('asset/ball.png'), 
                     ),
                     const SizedBox(height: 10),
                     // Text Box (T2)
