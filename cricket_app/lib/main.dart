@@ -1,121 +1,146 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MiniCricketApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MiniCricketApp extends StatelessWidget {
+  const MiniCricketApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      title: 'Mini Cricket',
+      home: const CricketGame(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class CricketGame extends StatefulWidget {
+  const CricketGame({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<CricketGame> createState() => _CricketGameState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _CricketGameState extends State<CricketGame> {
+  // --- State Variables ---
+  int balls = 6;         // Initially you have 6 balls
+  int totalRuns = 0;     // Total score
+  String currentRunText = ""; // Text to show "3 runs", "no runs", etc.
 
-  void _incrementCounter() {
+  // --- Logic Functions ---
+  void playBall() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      // Generate a random number between 0 and 6 (nextInt(7) means 0 to 6)
+      int runs = Random().nextInt(7); 
+      
+      totalRuns += runs; // Append runs
+      balls--;           // Reduce one ball
+      
+      // Update the text based on the runs scored
+      if (runs == 0) {
+        currentRunText = "No Runs";
+      } else {
+        currentRunText = "$runs Runs";
+      }
     });
   }
 
+  void restartGame() {
+    setState(() {
+      // Reset everything back to initial state
+      balls = 6;
+      totalRuns = 0;
+      currentRunText = "";
+    });
+  }
+
+  // --- UI Structure ---
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
+      backgroundColor: Colors.blue[600], // Match the blue background from the screenshots
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: const Text('Mini Cricket', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.blue[900],
+        centerTitle: true,
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('You have pushed the button this many times:'),
+            // Following the Row( Column, Column ) structure from the whiteboard
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // --- Left Column: Bat & Runs ---
+                Column(
+                  children: [
+                    // Image Box (I1)
+                    Container(
+                      width: 100,
+                      height: 100,
+                      color: Colors.white,
+                      // NOTE: Replace this Icon with your actual image: Image.asset('assets/bat.png')
+                      child: const Icon(Icons.sports_cricket, size: 80, color: Colors.brown), 
+                    ),
+                    const SizedBox(height: 10),
+                    // Text Box (T1)
+                    const Text('Runs', style: TextStyle(color: Colors.white, fontSize: 18)),
+                    // Value Box (v1)
+                    Text('$totalRuns', style: const TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                
+                // --- Right Column: Ball & Balls remaining ---
+                Column(
+                  children: [
+                    // Image Box (I2)
+                    Container(
+                      width: 100,
+                      height: 100,
+                      color: Colors.white,
+                      // NOTE: Replace this Icon with your actual image: Image.asset('assets/ball.png')
+                      child: const Icon(Icons.sports_baseball, size: 80, color: Colors.red), 
+                    ),
+                    const SizedBox(height: 10),
+                    // Text Box (T2)
+                    const Text('Balls', style: TextStyle(color: Colors.white, fontSize: 18)),
+                    // Value Box (v2)
+                    Text('$balls', style: const TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 40),
+            
+            // Result Text showing runs for the current ball
             Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+              currentRunText,
+              style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            
+            const SizedBox(height: 20),
+            
+            // The Button (changes depending on if balls > 0)
+            ElevatedButton(
+              // If balls > 0, button plays ball. If 0, it restarts.
+              onPressed: balls > 0 ? playBall : restartGame, 
+              style: ElevatedButton.styleFrom(
+                backgroundColor: balls > 0 ? Colors.blue[800] : Colors.red, // Blue for Bat, Red for Restart
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+              ),
+              child: Text(
+                balls > 0 ? 'Bat' : 'Restart',
+                style: const TextStyle(fontSize: 18, color: Colors.white),
+              ),
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
